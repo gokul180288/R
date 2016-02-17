@@ -1,0 +1,11 @@
+
+.First <- function() {
+  print("test1")
+}
+print("test2")
+print(“kauwabanga motherfuckers”)
+
+#  library(tseries)
+#  library(forecast)
+#  library(vars)
+
