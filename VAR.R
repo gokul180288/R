@@ -10,10 +10,7 @@
   srcDrc <- getSrcDirectory(function(x) {x})
   setwd(srcDrc)
   source("Data_Retrieve.r")
-  #dev.off(dev.list()["RStudioGD"])
-  
-  actual.diff <- diff(sc.data)
-  i <- 0
+  # dev.off(dev.list()["RStudioGD"])
   
   # Collect index (S&P 500) data from Yahoo
   
@@ -39,27 +36,38 @@
     mat <- na.omit(mat)
     colnames(mat)[3] <- "value.SPX"
     mat <- xts(mat[,-4],order.by=mat[,4])
+    # Use first differences
+    mat <- na.omit(diff(mat))
+    
     #xts(mat)
-  
-        
-  if (i==1){
-    par(mfrow=c(2,3))
-    plot(data, main="data 500 days rolling")
-    plot(data_fd, main = "first differences 500 days rolling")
-    hist(data_fd, main = "histogramm of fd")
-    acf(data, main = "ACF data")
-    acf(data_fd, main = "ACF fd", na.action=na.omit)
-    pacf(data_fd, main = "PACF fd",  na.action=na.omit)
-  }
-  
-  par(mfrow=c(2,2))
-  plot(mat[,1],main="EURUSD")
-  plot(mat[,2],main="XAUUSD")
-  plot(mat[,3],main="SPX")
+
+  # par(mfrow=c(2,2))
+  # plot(mat[,1],main="EURUSD")
+  # plot(mat[,2],main="XAUUSD")
+  # plot(mat[,3],main="SPX")
   acf(mat,lag.max=10)
-  acf(mat,type="partial",lag.max=10)
+  # acf(mat,type="partial",lag.max=10)
   
+  print('dim mat')
+  print(dim(mat))
+  mat.VAR.const <- VARselect(mat, lag.max=12, type="const")
+  print('mat.VAR.const')
+  print(mat.VAR.const$selection)
+  mat.VAR.const.0 <- VAR(mat, p=mat.VAR.const$selection[3],type="const")
+  options(show.signif.stars=TRUE)
+  print(summary(mat.VAR.const.0))
   
+  # Plot Impulse Respnse Functions
+  # plot(irf(mat.VAR.const.0, impulse="value.EUR.USD"))
+  
+  # Ordinary and Partial Autocorrelations of Differenced Series
+
+  # par(mfrow=c(2,2))
+  # plot(mat[,1],main="EURUSD")
+  # plot(mat[,2],main="XAUUSD")
+  # plot(mat[,3],main="SPX")
+  
+    
   print(paste("End: ", Sys.time()))
   
   
