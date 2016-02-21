@@ -45,12 +45,20 @@
   # plot(mat[,1],main="EURUSD")
   # plot(mat[,2],main="XAUUSD")
   # plot(mat[,3],main="SPX")
-  acf(mat,lag.max=10)
+  # acf(mat,lag.max=10)
   # acf(mat,type="partial",lag.max=10)
   
-  print('dim mat')
-  print(dim(mat))
+  # print('dim mat')
+  # print(dim(mat))
   
+  
+      np <- 0
+      n <- 0
+    
+      for(j in 100:248){
+      
+      mat <- mat[(j-99):j,]
+      
   mat.VAR.const <- VARselect(mat, lag.max=12, type="const")
   print('mat.VAR.const')
   print(mat.VAR.const$selection)
@@ -73,7 +81,17 @@
   # plot(mat[,2],main="XAUUSD")
   # plot(mat[,3],main="SPX")
   
-    
+  # Calculation of Hit Rate          
+  if (sign(actual.diff[(j+1),])==sign(var.pred$fcst$value.EUR.USD)){
+    if(i==1){
+      print(actual.diff[(j+1),])
+      print(eurusd.pred$pred)
+    }
+    np=np+1
+  }
+  n=n+1
+  
+  }    
   print(paste("End: ", Sys.time()))
   
   
